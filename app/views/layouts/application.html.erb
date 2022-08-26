@@ -14,8 +14,12 @@
   <h1>ToDo</h1>
   <ul>
   <% @tasks.each do |task| %>
-    <li><%= task.body %></li>
+    <p>
+      <%= task.id %>
+      <%= task.body %>
+    </p>
   <% end %>
+  
   </ul>
   </body>
 </html>
