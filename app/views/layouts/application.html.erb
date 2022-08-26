@@ -11,6 +11,11 @@
   </head>
 
   <body>
-    <%= yield %>
+  <h1>ToDo</h1>
+  <ul>
+  <% @tasks.each do |task| %>
+    <li><%= task.body %></li>
+  <% end %>
+  </ul>
   </body>
 </html>
