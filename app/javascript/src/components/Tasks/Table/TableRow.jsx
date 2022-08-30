@@ -7,8 +7,8 @@ const TableRow = ({ data }) => (
     {data.map(rowData => (
       <tr key={rowData.id}>
         <td
-          className="truncate block w-64 px-6 py-4 text-sm
-            font-medium capitalize leading-8 text-bb-purple"
+          className="truncate text-bb-purple block w-64 px-6 py-4
+            text-sm font-medium capitalize leading-8"
         >
           {rowData.title}
         </td>
