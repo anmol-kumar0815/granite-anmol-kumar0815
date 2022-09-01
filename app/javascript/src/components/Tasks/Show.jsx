@@ -43,9 +43,9 @@ const Show = () => {
       <h1 className="text-bb-gray border-b border-bb-gray mt-3 mb-3 pb-3 pl-3 text-lg leading-5">
         <span>Task Title : </span> {taskDetails?.title}
       </h1>
-      <div className="bg-bb-env rounded mt-2 mb-4 px-2">
+      <div className="rounded mt-2 mb-4 bg-bb-env px-2">
         <i
-          className="transition duration-300ease-in-out ri-edit-line hover:text-bb-yellow cursor-pointer text-center text-2xl"
+          className="transition duration-300ease-in-out ri-edit-line cursor-pointer text-center text-2xl hover:text-bb-yellow"
           onClick={updateTask}
         />
       </div>
