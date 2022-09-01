@@ -54,3 +54,4 @@ end
 gem "react-rails"
 gem "tzinfo-data", platforms: [:mingw, :mswin, :x64_mingw, :jruby]
 # previous gems as it was
+gem "bcrypt", "~> 3.1.13"
