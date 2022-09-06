@@ -2,6 +2,7 @@
 
 class Comment < ApplicationRecord
   MAX_CONTENT_LENGTH = 511
+
   belongs_to :task
   belongs_to :user
 
