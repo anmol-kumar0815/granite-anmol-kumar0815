@@ -14,18 +14,9 @@ class UsersController < ApplicationController
     respond_with_success(t("successfully_created", entity: "User"))
   end
 
-  before_destroy :assign_tasks_to_task_owners
-
   private
 
     def user_params
       params.require(:user).permit(:name, :email, :password, :password_confirmation)
-    end
-
-    def assign_tasks_to_task_owners
-      tasks_whose_owner_is_not_current_user = assigned_tasks.select { |task| task.task_owner_id != id }
-      tasks_whose_owner_is_not_current_user.each do |task|
-        task.update(assigned_user_id: task.task_owner_id)
-      end
     end
 end
