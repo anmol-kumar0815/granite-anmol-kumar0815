@@ -1,4 +1,6 @@
-require 'test_helper'
+# frozen_string_literal: true
+
+require "test_helper"
 
 class TasksControllerTest < ActionDispatch::IntegrationTest
   def setup
@@ -13,22 +15,22 @@ class TasksControllerTest < ActionDispatch::IntegrationTest
     get tasks_path, headers: @creator_headers
     assert_response :success
     response_json = response.parsed_body
-    all_tasks = response_json['tasks']
+    all_tasks = response_json["tasks"]
 
-    pending_tasks_count = Task.where(progress: 'pending').count
-    completed_tasks_count = Task.where(progress: 'completed').count
+    pending_tasks_count = Task.where(progress: "pending").count
+    completed_tasks_count = Task.where(progress: "completed").count
 
-    assert_equal all_tasks['pending'].length, pending_tasks_count
-    assert_equal all_tasks['completed'].length, completed_tasks_count
+    assert_equal all_tasks["pending"].length, pending_tasks_count
+    assert_equal all_tasks["completed"].length, completed_tasks_count
   end
 
   def test_should_create_valid_task
     post tasks_path,
-      params: { task: { title: 'Learn Ruby', task_owner_id: @creator.id, assigned_user_id: @assignee.id } },
+      params: { task: { title: "Learn Ruby", task_owner_id: @creator.id, assigned_user_id: @assignee.id } },
       headers: @creator_headers
     assert_response :success
     response_json = response.parsed_body
-    assert_equal response_json['notice'], t('successfully_created', entity: 'Task')
+    assert_equal response_json["notice"], t("successfully_created", entity: "Task")
   end
 
   def test_shouldnt_create_task_without_title
@@ -36,7 +38,7 @@ class TasksControllerTest < ActionDispatch::IntegrationTest
       headers: @creator_headers
     assert_response :unprocessable_entity
     response_json = response.parsed_body
-    assert_equal response_json['error'], "Title can't be blank"
+    assert_equal response_json["error"], "Title can't be blank"
   end
 
   def test_creator_can_update_any_task_fields
@@ -101,6 +103,14 @@ class TasksControllerTest < ActionDispatch::IntegrationTest
   #   get task_path(invalid_slug), headers: @creator_headers
   #   assert_response :not_found
   #   assert_equal response.parsed_body["error"], t("task.not_found")
-  end
+  # end
 
+  def test_not_found_error_rendered_for_invalid_task_slug
+    invalid_slug = "invalid-slug"
+
+    get task_path(invalid_slug), headers: @creator_headers
+    assert_response :not_found
+    response_json = response.parsed_body
+    assert_equal response_json["error"], t("not_found", entity: "Task")
+  end
 end
