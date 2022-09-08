@@ -40,4 +40,6 @@ class ActiveSupport::TestCase
       "X-Auth-Email" => user.email
     }.merge(options)
   end
+
+  Dir[Rails.root.join("test/support/**/*.rb")].each { |f| require f }
 end
