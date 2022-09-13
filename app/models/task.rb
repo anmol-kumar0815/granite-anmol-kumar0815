@@ -2,6 +2,7 @@
 
 class Task < ApplicationRecord
   after_create :log_task_details
+  after_commit :log_task_details, on: :create
   RESTRICTED_ATTRIBUTES = %i[title task_owner_id assigned_user_id]
 
   MAX_TITLE_LENGTH = 125
