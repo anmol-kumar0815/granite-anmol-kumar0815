@@ -1,13 +1,10 @@
 # frozen_string_literal: true
 
 class TasksController < ApplicationController
-  before_action :load_task!, only: %i[show update destroy]
-  before_action :ensure_authorized_update_to_restricted_attrs, only: :update
-
   after_action :verify_authorized, except: :index
   after_action :verify_policy_scoped, only: :index
-
-  rescue_from Pundit::NotAuthorizedError, with: :handle_authorization_error
+  before_action :load_task!, only: %i[show update destroy]
+  before_action :ensure_authorized_update_to_restricted_attrs, only: :update
 
   def index
     tasks = policy_scope(Task)
@@ -23,6 +20,8 @@ class TasksController < ApplicationController
   end
 
   def show
+    # respond_with_json({ task: @task, assigned_user: @task.assigned_user })
+    # render
     authorize @task
     @comments = @task.comments.order("created_at DESC")
   end
@@ -39,25 +38,21 @@ class TasksController < ApplicationController
     respond_with_success(t("successfully_deleted", entity: "Task")) unless params.key?(:quiet)
   end
 
-  def ensure_authorized_update_to_restricted_attrs
-    is_editing_restricted_params = Task::RESTRICTED_ATTRIBUTES.any? { |a| task_params.key?(a) }
-    is_not_owner = @task.task_owner_id != @current_user.id
-    if is_editing_restricted_params && is_not_owner
-      handle_authorization_error
-    end
-  end
-
   private
-
-    def task_params
-      params.require(:task).permit(:title, :assigned_user_id, :progress, :status)
-    end
 
     def load_task!
       @task = Task.find_by!(slug: params[:slug])
     end
 
-    def handle_authorization_error
-      respond_with_error("Access denied. You are not authorized to perform this action.", :forbidden)
+    def task_params
+      params.require(:task).permit(:title, :assigned_user_id, :progress, :status)
+    end
+
+    def ensure_authorized_update_to_restricted_attrs
+      is_editing_restricted_params = Task::RESTRICTED_ATTRIBUTES.any? { |a| task_params.key?(a) }
+      is_not_owner = @task.task_owner_id != @current_user.id
+      if is_editing_restricted_params && is_not_owner
+        handle_authorization_error
+      end
     end
 end

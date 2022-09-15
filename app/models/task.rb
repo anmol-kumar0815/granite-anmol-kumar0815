@@ -1,18 +1,25 @@
 # frozen_string_literal: true
 
 class Task < ApplicationRecord
+  MAX_TITLE_LENGTH = 50
+  RESTRICTED_ATTRIBUTES = %i[title task_owner_id assigned_user_id]
+  scope :accessible_to, ->(user_id) { where("task_owner_id = ? OR assigned_user_id = ?", user_id, user_id) }
+
+  enum status: { unstarred: "unstarred", starred: "starred" }
+  enum progress: { pending: "pending", completed: "completed" }
   after_create :log_task_details
   after_commit :log_task_details, on: :create
-  RESTRICTED_ATTRIBUTES = %i[title task_owner_id assigned_user_id]
 
-  MAX_TITLE_LENGTH = 125
-
-  enum progress: { pending: "pending", completed: "completed" }
-  enum status: { starred: "starred", unstarred: "unstarred" }
-
-  has_many :comments, dependent: :destroy
   belongs_to :task_owner, foreign_key: "task_owner_id", class_name: "User"
   belongs_to :assigned_user, foreign_key: "assigned_user_id", class_name: "User"
+
+  # before_validation :set_title
+  # after_validation :set_title
+  # before_validation :set_title
+  # before_validation :print_set_title
+  # before_save :change_title
+
+  has_many :comments, dependent: :destroy
 
   validates :title, presence: true, length: { maximum: MAX_TITLE_LENGTH }
   validates :slug, uniqueness: true
@@ -59,4 +66,16 @@ class Task < ApplicationRecord
     def log_task_details
       TaskLoggerJob.perform_later(self)
     end
+
+  # def set_title
+  #   self.title = 'Pay electricity bill'
+  # end
+
+  # def print_set_title
+  #   puts self.title
+  # end
+
+  # def change_title
+  #   self.title = "Pay electricity & TV bill"
+  # end
 end
