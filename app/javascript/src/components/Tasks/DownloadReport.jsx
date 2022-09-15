@@ -9,11 +9,8 @@ const DownloadReport = () => {
 
   const generatePdf = async () => {
     try {
-      logger.info(1);
       await tasksApi.generatePdf();
-      logger.info("Report generated successfully");
     } catch (error) {
-      logger.info("I am in DownloadReport");
       logger.error(error);
     }
   };
